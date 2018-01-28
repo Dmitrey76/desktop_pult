@@ -4,10 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls;
+  Dialogs, StdCtrls, ExtCtrls, Sockets, Unit2;
 
 type
   TControlOrder = (coLed, coPower, coNone);
+
+  TSendData = array [0..4] of byte;
 
   TPanelButton = class (TPanel)
     private
@@ -15,7 +17,7 @@ type
       FControlOrder : TControlOrder;
   end;
 
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
     Button1: TPanel;
     Button2: TPanel;
     GroupBox1: TGroupBox;
@@ -34,7 +36,8 @@ type
     Button12: TPanel;
     Button13: TPanel;
     Button14: TPanel;
-    Panel1: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
     procedure FormShow(Sender: TObject);
     procedure Panel1Click(Sender: TObject);
   private
@@ -44,13 +47,13 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TfrmMain.FormShow(Sender: TObject);
 begin
 
   Self.Left := 0;
@@ -61,7 +64,7 @@ begin
 
 end;
 
-procedure TForm1.Panel1Click(Sender: TObject);
+procedure TfrmMain.Panel1Click(Sender: TObject);
 begin
 
   if TPanel(Sender).BevelInner = bvRaised then begin

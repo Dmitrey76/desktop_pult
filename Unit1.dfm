@@ -1,4 +1,4 @@
-object Form1: TForm1
+object frmMain: TfrmMain
   Left = 339
   Top = 145
   BorderIcons = []
@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Pult'
   ClientHeight = 547
   ClientWidth = 844
-  Color = clBtnFace
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -23,16 +23,60 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 256
     Top = 8
-    Width = 110
-    Height = 13
+    Width = 160
+    Height = 19
     Caption = #1058#1077#1084#1087#1077#1088#1072#1090#1091#1088#1072' '#1074' '#1076#1086#1084#1077': '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
   end
   object Label2: TLabel
     Left = 256
     Top = 32
-    Width = 115
-    Height = 13
+    Width = 165
+    Height = 19
     Caption = #1058#1077#1084#1087#1077#1088#1072#1090#1091#1088#1072' '#1074' '#1097#1080#1090#1082#1077':'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 432
+    Top = 8
+    Width = 9
+    Height = 19
+    Caption = '0'
+    Color = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    Transparent = True
+  end
+  object Label4: TLabel
+    Left = 432
+    Top = 32
+    Width = 9
+    Height = 19
+    Caption = '0'
+    Color = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    Transparent = True
   end
   object Button1: TPanel
     Left = 16
@@ -76,6 +120,14 @@ object Form1: TForm1
     Height = 217
     Anchors = [akLeft, akTop, akRight]
     Caption = #1069#1090#1072#1078' 1'
+    Color = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
     TabOrder = 2
     object Button3: TPanel
       Left = 16
@@ -187,6 +239,14 @@ object Form1: TForm1
     Height = 225
     Anchors = [akLeft, akTop, akRight]
     Caption = #1069#1090#1072#1078' 2'
+    Color = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
     TabOrder = 3
     object Button9: TPanel
       Left = 16
@@ -290,18 +350,5 @@ object Form1: TForm1
       TabOrder = 5
       OnClick = Panel1Click
     end
-  end
-  object Panel1: TPanel
-    Left = 448
-    Top = 16
-    Width = 113
-    Height = 49
-    BevelInner = bvRaised
-    BevelOuter = bvNone
-    Caption = 'Panel1'
-    Color = clSilver
-    TabOrder = 4
-    Visible = False
-    OnClick = Panel1Click
   end
 end
