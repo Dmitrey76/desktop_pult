@@ -2,127 +2,228 @@ unit unit2;
 
 interface
 
-uses Sockets, SysUtils, Classes, Dialogs;
+uses Sockets, SysUtils, Classes, Dialogs, Windows, Forms, WinSock;
+
+type
+
+  TControlOperation = (coSet, coRead, coReset);
+
+  TButtonState = (bsOn, bsOff, bsNone, bsRefresh);
+
+  TSendData = record
+     btOperation : TControlOperation;
+     btDestination : byte;
+     btState : TButtonState;
+  end;
+
+  TDataSender = class (TObject)
+  private
+    FCurrentController : string;
+    FServer : TTCPServer;
+    FDataStream : TMemoryStream;
+    FLock: TRTLCriticalSection;
+    FControllersList: TStringList;
+    procedure TcpServer1Accept(Sender: TObject;
+                ClientSocket: TCustomIpClient);
+    procedure ClientReceive (ClientThread : TCustomIpClient);
+
+
+  public
+    constructor Create (Server : TTCPServer);
+    destructor Destroy (); override;
+
+    procedure Lock ();
+    procedure Unlock ();
+
+    procedure StartServer ();
+    function CheckConnection : boolean;
+    function SendData (Data : TSendData; pClient : TTcpClient) : boolean;
+    function GetData () : TSendData;
+    property CurrentControllers : TStringList read FControllersList;
+  end;
 
 implementation
 
 uses Unit1;
 
-type
-
-  DataSender = class (TObject)
-  private
-    FIPAddress : string;
-    FPort : byte;
-    FServer : TTCPServer;
-    FClient : TTCPClient;
-    FDataStream : TMemoryStream;
-    procedure TcpServer1Accept(Sender: TObject;
-                ClientSocket: TCustomIpClient);
-    procedure TcpClientReceive(Sender: TObject; Buf: PAnsiChar;
-                var DataLen: Integer);
-
-  public
-    constructor Create (IPAddress : string; Port : byte);
-    destructor Destroy (); override;
-    procedure StartServer ();
-    procedure StartClient ();
-    function CheckConnection : boolean;
-    function SendData (Data : TSendData) : boolean;
-    function GetData () : TSendData;
-  end;
-
 { Sender }
 
-function DataSender.CheckConnection: boolean;
+function TDataSender.CheckConnection: boolean;
 begin
 
   Result := True;
   try
 
     StartServer ();
-    StartClient ();
-    
+
   except
     Result := False;
   end;
 
 end;
 
-constructor DataSender.Create (IPAddress : string; Port : byte);
+constructor TDataSender.Create (Server : TTCPServer);
 begin
 
-  FIPAddress := IPAddress ;
-  FPort := Port;
-  FServer := TTCPServer.Create (frmMain);
+  FServer := Server;
   FServer.OnAccept := TcpServer1Accept;
-  FClient := TTCPClient.Create (frmMain);
-  FClient.OnReceive := TcpClientReceive;
+
+  FCurrentController := '(нет)';
+
+  FControllersList := TStringList.Create ();
+
   FDataStream := TMemoryStream.Create ();
+
+  InitializeCriticalSection(FLock);
+  CheckConnection ();
 
 end;
 
-destructor DataSender.Destroy;
+destructor TDataSender.Destroy;
+var i, cnt : integer;
 begin
 
   inherited Destroy ();
 
   FServer.Active := False;
-  FClient.Active := False;
 
-  FServer.Free ();
-  FClient.Free ();
   FDataStream.Free ();
 
+  cnt := FControllersList.Count - 1;
+
+  Lock ();
+  try
+    for i := 0 to cnt do begin
+
+      TTCPClient(FControllersList.Objects[i]).Close;
+      FControllersList.Objects[i].Free;
+
+    end;
+  finally
+    Unlock ();
+  end;
+
+  FControllersList.Free ();
+
+  DeleteCriticalSection(FLock);
+
 end;
 
-function DataSender.GetData: TSendData;
+function TDataSender.GetData: TSendData;
+var
+  recData : TSendData;
+  i : integer;
 begin
 
-  ShowMessage (IntToStr(FDataStream.Size));
+  Lock ();
+  try
+
+    FDataStream.Position := 0;
+    i := FDataStream.Size;
+
+    while i > 0 do begin
+
+      FDataStream.Read(recData, sizeof (recData));
+      PostMessage (Application.Handle, _WM_SET_BUTTON, Byte(recData.btDestination), Byte(recData.btState));
+
+      Dec (i, sizeof (recData));
+
+    end;
+
+    FDataStream.Clear ();
+
+  finally
+    Unlock ();
+  end;
 
 end;
 
-function DataSender.SendData(Data: TSendData): boolean;
+function TDataSender.SendData(Data: TSendData; pClient : TTcpClient): boolean;
 begin
 
-  Result := (FClient.SendBuf(Data, sizeof(TSendData)) = sizeof(TSendData));
+  try
 
-end;
+    pClient.Active := True;
+    Result := pClient.SendBuf(Data, sizeof(TSendData)) = sizeof(TSendData);
 
-procedure DataSender.StartClient;
-begin
-
-  FClient.Active := False;
-  FClient.RemoteHost := FIPAddress;
-  FClient.RemotePort := IntToStr(FPort);
-  FClient.Active := True;
+  finally
+    pClient.Active := False;
+  end;
   
 end;
 
-procedure DataSender.StartServer;
+procedure TDataSender.StartServer;
 begin
 
   FServer.Active := False;
-  FServer.LocalHost := '127.0.0.1';
-  FServer.LocalPort := IntToStr(FPort);
+
+  FServer.LocalHost := _DefaultIP;
+  FServer.LocalPort := IntToStr(_DefaultPort);
+
   FServer.Active := True;
-  
+
 end;
 
-procedure DataSender.TcpServer1Accept(Sender: TObject;
+procedure TDataSender.TcpServer1Accept(Sender: TObject;
   ClientSocket: TCustomIpClient);
+var sHost: string;
+    pClient : TTcpClient;
 begin
 
-  ClientSocket.OnReceive := TcpClientReceive;
+  sHost := ClientSocket.RemoteHost;
+  if FCurrentController = '' then
+    FCurrentController := sHost;
+
+  Lock ();
+  try
+     if FControllersList.IndexOf(sHost) < 0 then begin
+       pClient := TTcpClient.Create (ClientSocket.Owner);
+       pClient.RemoteHost := sHost;
+       pClient.RemotePort := IntToStr (_DefaultPort);
+       FControllersList.InsertObject (0, sHost, pClient);
+       PostMessage (Application.Handle, _WM_SET_BUTTON, 0, Byte (bsRefresh));
+     end;
+  finally
+     Unlock ();
+  end;
+
+  while ClientSocket.Connected do begin
+
+    if ClientSocket.WaitForData() then
+      ClientReceive (ClientSocket);
+
+    Sleep (10);
+
+  end;
 
 end;
 
-procedure DataSender.TcpClientReceive(Sender: TObject; Buf: PAnsiChar;
-  var DataLen: Integer);
+procedure TDataSender.Lock;
+begin
+  EnterCriticalSection(FLock);
+end;
+
+procedure TDataSender.Unlock;
+begin
+  LeaveCriticalSection(FLock);
+end;
+
+procedure TDataSender.ClientReceive(ClientThread: TCustomIpClient);
+var Data : TSendData;
 begin
 
-  FDataStream.WriteBuffer(Buf^, DataLen);
+  while ClientThread.Connected and ( ClientThread.PeekBuf(Data, sizeof(Data)) = sizeof(TSendData) ) do begin
+
+    Lock ();
+    try
+      ClientThread.ReceiveBuf(Data, sizeof(Data));
+      FDataStream.WriteBuffer(Data, sizeof(Data));
+    finally
+      Unlock ();
+      GetData ();
+    end;
+    
+  end;
 
 end;
 

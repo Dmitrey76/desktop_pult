@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 339
-  Top = 145
+  Left = 272
+  Top = 167
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Pult'
@@ -14,6 +14,8 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   Visible = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
     844
@@ -21,7 +23,7 @@ object frmMain: TfrmMain
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 256
+    Left = 464
     Top = 8
     Width = 160
     Height = 19
@@ -34,7 +36,7 @@ object frmMain: TfrmMain
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 256
+    Left = 464
     Top = 32
     Width = 165
     Height = 19
@@ -47,7 +49,7 @@ object frmMain: TfrmMain
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 432
+    Left = 640
     Top = 8
     Width = 9
     Height = 19
@@ -63,7 +65,7 @@ object frmMain: TfrmMain
     Transparent = True
   end
   object Label4: TLabel
-    Left = 432
+    Left = 640
     Top = 32
     Width = 9
     Height = 19
@@ -78,10 +80,39 @@ object frmMain: TfrmMain
     ParentFont = False
     Transparent = True
   end
+  object Label5: TLabel
+    Left = 464
+    Top = 56
+    Width = 95
+    Height = 19
+    Caption = #1050#1086#1085#1090#1088#1086#1083#1083#1077#1088':'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lbTime: TLabel
+    Left = 640
+    Top = 3
+    Width = 193
+    Height = 86
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    AutoSize = False
+    Caption = '00:00:00 1 '#1084#1072#1103
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -24
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object Button1: TPanel
     Left = 16
     Top = 8
-    Width = 225
+    Width = 201
     Height = 65
     Cursor = crHandPoint
     BevelInner = bvRaised
@@ -96,12 +127,11 @@ object frmMain: TfrmMain
     OnClick = Panel1Click
   end
   object Button2: TPanel
-    Left = 608
+    Left = 232
     Top = 8
-    Width = 223
+    Width = 201
     Height = 65
     Cursor = crHandPoint
-    Anchors = [akTop, akRight]
     BevelInner = bvRaised
     Caption = #1044#1086#1084' '#1087#1091#1089#1090#1086#1081
     Font.Charset = DEFAULT_CHARSET
@@ -110,7 +140,7 @@ object frmMain: TfrmMain
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
     OnClick = Panel1Click
   end
   object GroupBox1: TGroupBox
@@ -128,8 +158,9 @@ object frmMain: TfrmMain
     Font.Style = []
     ParentColor = False
     ParentFont = False
-    TabOrder = 2
-    object Button3: TPanel
+    TabOrder = 3
+    object Set_Button_1: TPanel
+      Tag = 161
       Left = 16
       Top = 24
       Width = 185
@@ -146,7 +177,8 @@ object frmMain: TfrmMain
       TabOrder = 0
       OnClick = Panel1Click
     end
-    object Button4: TPanel
+    object Set_Button_2: TPanel
+      Tag = 162
       Left = 216
       Top = 24
       Width = 185
@@ -163,7 +195,8 @@ object frmMain: TfrmMain
       TabOrder = 1
       OnClick = Panel1Click
     end
-    object Button5: TPanel
+    object Set_Button_3: TPanel
+      Tag = 163
       Left = 416
       Top = 24
       Width = 185
@@ -180,7 +213,8 @@ object frmMain: TfrmMain
       TabOrder = 2
       OnClick = Panel1Click
     end
-    object Button6: TPanel
+    object Set_Button_4: TPanel
+      Tag = 164
       Left = 616
       Top = 24
       Width = 185
@@ -197,7 +231,8 @@ object frmMain: TfrmMain
       TabOrder = 3
       OnClick = Panel1Click
     end
-    object Button7: TPanel
+    object Set_Button_6: TPanel
+      Tag = 166
       Left = 216
       Top = 120
       Width = 185
@@ -214,7 +249,8 @@ object frmMain: TfrmMain
       TabOrder = 4
       OnClick = Panel1Click
     end
-    object Button8: TPanel
+    object Set_Button_5: TPanel
+      Tag = 165
       Left = 16
       Top = 120
       Width = 185
@@ -247,8 +283,9 @@ object frmMain: TfrmMain
     Font.Style = []
     ParentColor = False
     ParentFont = False
-    TabOrder = 3
-    object Button9: TPanel
+    TabOrder = 4
+    object Set_Button_7: TPanel
+      Tag = 177
       Left = 16
       Top = 24
       Width = 185
@@ -265,7 +302,8 @@ object frmMain: TfrmMain
       TabOrder = 0
       OnClick = Panel1Click
     end
-    object Button10: TPanel
+    object Set_Button_11: TPanel
+      Tag = 181
       Left = 16
       Top = 128
       Width = 185
@@ -282,7 +320,8 @@ object frmMain: TfrmMain
       TabOrder = 1
       OnClick = Panel1Click
     end
-    object Button11: TPanel
+    object Set_Button_8: TPanel
+      Tag = 178
       Left = 216
       Top = 24
       Width = 185
@@ -299,7 +338,8 @@ object frmMain: TfrmMain
       TabOrder = 2
       OnClick = Panel1Click
     end
-    object Button12: TPanel
+    object Set_Button_9: TPanel
+      Tag = 179
       Left = 416
       Top = 24
       Width = 185
@@ -316,7 +356,8 @@ object frmMain: TfrmMain
       TabOrder = 3
       OnClick = Panel1Click
     end
-    object Button13: TPanel
+    object Set_Button_10: TPanel
+      Tag = 180
       Left = 616
       Top = 24
       Width = 185
@@ -350,5 +391,42 @@ object frmMain: TfrmMain
       TabOrder = 5
       OnClick = Panel1Click
     end
+  end
+  object cbControllers: TComboBox
+    Left = 640
+    Top = 56
+    Width = 129
+    Height = 21
+    AutoComplete = False
+    BevelInner = bvLowered
+    BevelKind = bkFlat
+    BevelOuter = bvRaised
+    Style = csDropDownList
+    Ctl3D = False
+    ItemHeight = 13
+    ParentCtl3D = False
+    TabOrder = 5
+    TabStop = False
+  end
+  object Button3: TButton
+    Left = 772
+    Top = 56
+    Width = 61
+    Height = 21
+    Caption = #1086#1073#1085#1086#1074#1080#1090#1100
+    Default = True
+    TabOrder = 1
+    OnClick = Button3Click
+  end
+  object TcpServer: TTcpServer
+    LocalHost = '192.168.1.39'
+    LocalPort = '738'
+    Left = 776
+    Top = 248
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 728
+    Top = 248
   end
 end
